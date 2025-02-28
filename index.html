@@ -133,7 +133,7 @@
               <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#abstract">Abstract</a>
 					    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#parallel_style_transfer">Parallel <br />Style Transfer</a></li>
 					    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#non_parallel_style_transfer">Non-parallel <br />Style Transfer</a></li>
-					    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#ablations">Ablations</a></li>
+					    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#ablations">Ablation <br />Study</a></li>
             </ul>
           </div>
         </div>
@@ -214,9 +214,9 @@
           });
           html += '<td colspan="3"></td></tr>';
       
-          // 2) 두 번째 행: FS2 w/ GST, StyleSpeech (2개 사용, 나머지 3칸 비움)
+          // 2) 두 번째 행: FS2 w/ GST, FS2 w/ CSE (2개 사용, 나머지 3칸 비움)
           html += "<tr>";
-          ["FastSpeech 2 w/ GST", "StyleSpeech"].forEach(modelName => {
+          ["FastSpeech 2 w/ GST", "FastSpeech 2 w/ CSE"].forEach(modelName => {
             html += '<td style="vertical-align: top; text-align:center;">';
             html += "<p>" + modelName + "</p>";
             html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
@@ -224,9 +224,9 @@
           });
           html += '<td colspan="3"></td></tr>';
       
-          // 3) 세 번째 행: FS2 w/ CSE, GenerSpeech, Spotlight-TTS (3개 사용, 나머지 2칸 비움)
+          // 3) 세 번째 행: StyleSpeech, GenerSpeech, Spotlight-TTS (3개 사용, 나머지 2칸 비움)
           html += "<tr>";
-          ["FastSpeech 2 w/ CSE", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(modelName => {
+          ["StyleSpeech", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(modelName => {
             html += '<td style="vertical-align: top; text-align:center;">';
             html += "<p>" + modelName + "</p>";
             html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
@@ -351,9 +351,9 @@
                             });
                             html += '<td colspan="3"></td></tr>';
     
-                            // Create second row with FastSpeech2 w/ GST and StyleSpeech
+                            // Create second row with FastSpeech2 w/ GST and FastSpeech2 w/ CSE
                             html += "<tr>";
-                            ["FastSpeech2 w/ GST", "StyleSpeech"].forEach(model => {
+                            ["FastSpeech2 w/ GST", "FastSpeech2 w/ CSE"].forEach(model => {
                                 html += '<td style="vertical-align: top; text-align:center;">';
                                 html += "<p>" + model + "</p>";
                                 html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
@@ -363,7 +363,7 @@
     
                             // Create third row with remaining models
                             html += "<tr>";
-                            ["FastSpeech2 w/ CSE", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(model => {
+                            ["StyleSpeech", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(model => {
                                 html += '<td style="vertical-align: top; text-align:center;">';
                                 html += "<p>" + model + "</p>";
                                 html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
@@ -391,7 +391,7 @@
         <div class="container">
             <div class="text-center">
                 <h2 class="page-section-heading d-inline-block text-dark">
-                    Ablation Studies
+                    Ablation Study
                 </h2>
             </div>
             <div class="divider-custom divider-dark">
