@@ -1,17 +1,644 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
-</head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="text-center">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Coming Soon</h1>
-            <p class="text-gray-600">Demo page is under construction.</p>
+  <head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+      a:link {
+        color: black;
+        text-decoration: none;
+      }
+      a:visited {
+        color: black;
+        text-decoration: none;
+      }
+      a:hover {
+        color: blue;
+        text-decoration: underline;
+      }
+      
+      /* 테이블 스타일 완전 재정의 */
+      .table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        margin: 0 auto;
+      }
+      
+      .table td {
+        width: 33.33% !important;
+        padding: 10px;
+        text-align: center;
+      }
+      
+      .table audio {
+        width: 100% !important;
+        max-width: none;
+      }
+      
+      /* 컨테이너 스타일 강화 */
+      #div2, #nonparallel_div {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+      }
+
+      /* 테이블 반응형 스타일 */
+      .table-responsive {
+        display: table;
+        width: 100%;
+        margin-bottom: 1rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+    <meta 
+      name="viewport" 
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Spotlight-TTS Demo</title>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Fonts CSS-->
+    <link rel="stylesheet" href="css/heading.css">
+    <link rel="stylesheet" href="css/body.css">
+    <!-- Bootstrap slider CSS -->
+    <!-- <link rel="stylesheet" href="css/bootstrap-slider.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css" integrity="sha512-3q8fi8M0VS+X/3n64Ndpp6Bit7oXSiyCnzmlx6IDBLGlY5euFySyJ46RUlqIVs0DPCGOypqP8IRk/EyPvU28mQ==" crossorigin="anonymous" />
+    <script>
+      function createAudioTable(config) {
+        // config = {
+        //    dir: 디렉토리 경로,
+        //    sample: { id, script, emotion? }, 
+        //    models: 행별 모델 그룹 배열,
+        //    headerType: 'emotion' | 'script' | 'both'
+        // }
+        
+        let html = '<table class="table table-responsive mb-4"'
+                 + ' style="width: 100%; margin: 0 auto; background-color: white; border-radius: 20px;">';
+        
+        // 헤더 생성
+        html += '<thead><tr><th colspan="5">';
+        if (config.headerType === 'both') {
+            html += `<div class="text-left">Emotion : <i>${config.sample.emotion}</i></div>`;
+            html += `<div class="text-left">Script : <i>${config.sample.script}</i></div>`;
+        } else if (config.headerType === 'script') {
+            html += `<div class="text-left">Script : <i>${config.sample.script}</i></div>`;
+        }
+        html += '</th></tr></thead><tbody>';
+
+        // 각 행 생성
+        config.models.forEach(rowModels => {
+            html += '<tr>';
+            rowModels.forEach(model => {
+                html += '<td style="vertical-align: top; text-align:center; width: 20%;">';
+                html += `<p>${model.name}</p>`;
+                html += `<audio controls style="width: 100%">
+                           <source src="${config.dir}/${model.folder}/${config.sample.id}.wav" type="audio/wav">
+                         </audio>`;
+                html += '</td>';
+            });
+            
+            // 남은 열 처리
+            const remainder = 5 - rowModels.length;
+            if (remainder > 0) {
+                html += `<td colspan="${remainder}" style="width: ${remainder * 20}%"></td>`;
+            }
+            html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        return html;
+      }
+    </script>
+    </head>
+    <body id="page-top">
+        <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
+        <div class="container">
+          <a class="navbar-brand js-scroll-trigger" href="#page-top"
+          >Spotlight-TTS</a>
+          <button 
+          class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded" type="button" 
+          data-toggle="collapse" 
+          data-target="#navbarResponsive" aria-controls="navbarResponsive" 
+          aria-expanded="false" aria-label="Toggle navigation"
+          >
+            Menu <i class="fas fa-bars"></i></button>
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#abstract">Abstract</a>
+					    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#parallel_style_transfer">Parallel <br />Style Transfer</a></li>
+					    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#non_parallel_style_transfer">Non-parallel <br />Style Transfer</a></li>
+					    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#ablations">Ablations</a></li>
+            </ul>
+          </div>
         </div>
-    </div>
-</body>
-</html>
+        </nav>
+
+
+        <header class="masthead bg-white text-left">
+          <!-- text-black 사용 가능 -->
+          <div class="container d-flex align-items-center flex-column">
+            <!-- Masthead Heading-->
+            <h1 class="masthead-heading mb-0">
+                Spotlight-TTS: Spotlighting the Style via Voiced-Aware Style Extraction and Style Direction Adjustment for Expressive Text-to-Speech
+            </h1>
+          </div>
+        </header>
+
+        <!-- Abstraction -->
+    <section class="page-section portfolio" id="abstract">
+      <div class="container">
+        <!-- Portfolio Section Heading-->
+        <div class="text-center">
+          <h2 class="page-section-heading text-secondary mb-0 d-inline-block">
+            Abstract
+          </h2>
+        </div>
+        <!-- Icon Divider-->
+        <div class="divider-custom">
+          <div class="divider-custom"></div>
+        </div>
+        <!-- Portfolio Grid Items-->
+        <div class="row justify-content-center">
+          <div class="col-lg-12 ml-auto">
+            <p class="legend lead">
+                &nbsp
+                Recent advances in expressive text-to-speech (TTS) have introduced diverse methods based on style embedding extracted from reference speech. However, synthesizing high-quality expressive speech remains challenging. We propose Spotlight-TTS, which exclusively emphasizes style via voiced-aware style extraction and style direction adjustment. Voiced-aware style extraction focuses on voiced regions highly related to style while maintaining continuity across different speech regions to improve expressiveness. We adjust the direction of the extracted style for optimal integration into the TTS model, which improves speech quality. Experimental results demonstrate that Spotlight-TTS achieves superior performance compared to baseline models in terms of expressiveness, overall speech quality, and style transfer capability.
+            </p>
+            <br />
+            <br />
+          </div>
+          <div class="text-center">
+            <br />
+            <img width="100%" src="./Figabc.png" />
+            <br />
+            <em>Overall framework of Spotlight-TTS</em> 
+            <br />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+        // Parallel 섹션의 테이블 생성 함수 (Non-parallel과 동일한 5열 구조)
+        function createTableForMainComparison(audioName, dir, script) {
+          // 모델 폴더 매핑 (원본 코드의 exp와 동일)
+          const parallelExp = {
+            "Reference": "gt",
+            "Reference(vocoder)": "Voc",
+            "FastSpeech 2 w/ GST": "GST",
+            "StyleSpeech": "StyleSpeech",
+            "FastSpeech 2 w/ CSE": "CSE",
+            "GenerSpeech": "GenerSpeech",
+            "Spotlight-TTS (Proposed)": "SpotlightTTS"
+          };
+      
+          // 테이블: 5열 구조 + 테이블 폭 100% + 가운데 정렬
+          let html = '<table class="table table-responsive mb-3" style="background-color: white; border-radius: 20px; width: 100%; margin: 0 auto;">';
+          html += '<thead><tr><th colspan="5" style="width: 40%">';
+          html += '<div class="text-left">Script : <i>' + script.script + '</i></div>';
+          html += "</th></tr></thead><tbody>";
+      
+          // 1) 첫 번째 행: GT, Vocoded (2개 사용, 나머지 3칸 비움)
+          html += "<tr>";
+          ["Reference", "Reference(vocoder)"].forEach(modelName => {
+            html += '<td style="vertical-align: top; text-align:center;">';
+            html += "<p>" + modelName + "</p>";
+            html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
+            html += '</td>';
+          });
+          html += '<td colspan="3"></td></tr>';
+      
+          // 2) 두 번째 행: FS2 w/ GST, StyleSpeech (2개 사용, 나머지 3칸 비움)
+          html += "<tr>";
+          ["FastSpeech 2 w/ GST", "StyleSpeech"].forEach(modelName => {
+            html += '<td style="vertical-align: top; text-align:center;">';
+            html += "<p>" + modelName + "</p>";
+            html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
+            html += '</td>';
+          });
+          html += '<td colspan="3"></td></tr>';
+      
+          // 3) 세 번째 행: FS2 w/ CSE, GenerSpeech, Spotlight-TTS (3개 사용, 나머지 2칸 비움)
+          html += "<tr>";
+          ["FastSpeech 2 w/ CSE", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(modelName => {
+            html += '<td style="vertical-align: top; text-align:center;">';
+            html += "<p>" + modelName + "</p>";
+            html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
+            html += '</td>';
+          });
+          html += '<td colspan="2"></td></tr>';
+      
+          html += "</tbody></table>";
+          return html;
+        }
+      </script>
+      
+      <!-- Parallel 섹션 -->
+      <section class="page-section bg-info text-white mb-0" id="parallel_style_transfer">
+        <div class="container">
+          <div class="text-center">
+            <h2 class="page-section-heading d-inline-block text-white">
+              Parallel Style Transfer
+            </h2>
+          </div>
+          <div class="text-center" style="text-align: center">
+            <br />
+          </div>
+          <div class="divider-custom divider-light">
+            <div class="divider-custom"></div>
+          </div>
+      
+          <div class="row">
+            <!-- 기존 코드의 id="div2" 컨테이너 -->
+            <div id="div2" class="col-12-auto mx-auto">
+              <script>
+                // 예시: 파일이 위치한 디렉토리
+                const dir = "./wavs/Parallel";
+      
+                // 샘플 오디오 목록
+                const audios = [
+                  { id: "0015_000383", emotion: "Angry", script: "This used to be jerrys occupation." },
+                  { id: "0012_000732", emotion: "Happy", script: "Who is been repeating all that hard stuff to you?" },
+                  { id: "0018_001445", emotion: "Surprise", script: "The nastiest things they saw were the cobwebs." },
+                  { id: "0020_001076", emotion: "Sad", script: "Let's make the noise a snake." }
+                ];
+      
+                // 테이블 생성 및 삽입
+                audios.forEach(function(sample) {
+                  const div = document.getElementById("div2");
+                  const html = createTableForMainComparison(sample.id, dir, sample);
+                  div.insertAdjacentHTML("beforeend", html);
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+      </section>
+    <!-- 
+    1) Non-Parallel Section 
+-->
+    <!-- Non-Parallel Section -->
+    <!-- Non-Parallel Section -->
+    <section class="page-section bg-secondary mb-0" id="non_parallel_style_transfer">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="page-section-heading d-inline-block text-white">
+                    Non-Parallel Style Transfer
+                </h2>
+            </div>
+            <div class="text-center" style="text-align: center">
+                <br />
+            </div>
+            <div class="divider-custom divider-light">
+                <div class="divider-custom"></div>
+            </div>
+    
+            <div class="row">
+                <div id="nonparallel_div" class="col-lg-auto ml-auto">
+                    <script>
+                        const nonParallelSamples = [
+                            {
+                                id: "0013_000380",
+                                refText: "must a name mean something ?",
+                                Script: "I thought you mean how old are you?"
+                            },
+                            {
+                                id: "0018_000400",
+                                refText: "rabbit gave a dog a hurrying up sort of nudge .",
+                                Script: "Let's make the noise a snake."
+                            },
+                            {
+                                id: "0011_000045",
+                                refText: "the nastiest things they saw were the cobwebs .",
+                                Script: "In which fox loses a tail and its elder sister finds one."
+                            },
+                            {
+                                id: "0012_000744",
+                                refText: "",
+                                Script: "The football teams give a tea party."
+                            }
+                        ];
+    
+                        const npModels = {
+                            "Reference": "GT",
+                            "Refernece(vocoder)": "Voc",
+                            "FastSpeech2 w/ GST": "GST",
+                            "StyleSpeech": "StyleSpeech",
+                            "FastSpeech2 w/ CSE": "CSE",
+                            "GenerSpeech": "GenerSpeech",
+                            "Spotlight-TTS (Proposed)": "SpotlightTTS"
+                        };
+    
+                        function createNonParallelTable(dir, sample) {
+                            let html = '<table class="table table-responsive" style="background-color: white; border-radius: 20px">';
+                            html += '<thead><tr><th colspan="5" style="width: 40%">';
+                            html += '<div class="text-left">Script : <i>' + sample.Script + '</i></div>';
+                            html += "</th></tr></thead><tbody>";
+    
+                            // Create first row with Reference Audio and Vocoded
+                            html += "<tr>";
+                            ["Reference", "Refernece(vocoder)"].forEach(model => {
+                                html += '<td style="vertical-align: top; text-align:center;">';
+                                html += "<p>" + model + "</p>";
+                                html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
+                                html += '</td>';
+                            });
+                            html += '<td colspan="3"></td></tr>';
+    
+                            // Create second row with FastSpeech2 w/ GST and StyleSpeech
+                            html += "<tr>";
+                            ["FastSpeech2 w/ GST", "StyleSpeech"].forEach(model => {
+                                html += '<td style="vertical-align: top; text-align:center;">';
+                                html += "<p>" + model + "</p>";
+                                html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
+                                html += '</td>';
+                            });
+                            html += '<td colspan="3"></td></tr>';
+    
+                            // Create third row with remaining models
+                            html += "<tr>";
+                            ["FastSpeech2 w/ CSE", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(model => {
+                                html += '<td style="vertical-align: top; text-align:center;">';
+                                html += "<p>" + model + "</p>";
+                                html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
+                                html += '</td>';
+                            });
+                            html += '<td colspan="2"></td></tr>';
+    
+                            html += "</tbody></table>";
+                            return html;
+                        }
+    
+                        const nonParallelDir = "./wavs/NonParallel";
+                        nonParallelSamples.forEach(sample => {
+                            const divElem = document.getElementById("nonparallel_div");
+                            const tableHtml = createNonParallelTable(nonParallelDir, sample);
+                            divElem.insertAdjacentHTML("beforeend", tableHtml);
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Ablation Section -->
+    <section class="page-section bg-light text-dark mb-0" id="ablations">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="page-section-heading d-inline-block text-dark">
+                    Ablation Studies
+                </h2>
+            </div>
+            <div class="divider-custom divider-dark">
+                <div class="divider-custom"></div>
+            </div>
+      
+            <!-- First Ablation Study -->
+            <div class="row">
+                <div class="col-12 mx-auto">
+                    <h4 class="text-center mb-4">Voiced-aware Style Extraction</h4>
+                    <div style="text-align: right; font-size: 14px;">
+                        <p></p>
+                        <p style="margin: 0px 0;">*RT: rotation trick</p>
+                        <p style="margin: 0px 0;">*UF: unvoiced filler</p>
+                        <p style="margin: 0px 0;">*VE: voiced extraction</p>
+                    </div>
+                    <div id="ablation_style_div">
+                        <script>
+                            function createAblationTable(dir, sample, groups) {
+                                let html = '<table class="table table-responsive mb-4"'
+                                         + ' style="width: 100%; margin: 0 auto; background-color: white; border-radius: 20px;">';
+                                html += '<thead><tr><th colspan="5">';
+                                html += `<div class="text-left">Script : <i>${sample.script}</i></div>`;
+                                html += '</th></tr></thead><tbody>';
+
+                                groups.forEach(group => {
+                                    html += '<tr>';
+                                    group.forEach(model => {
+                                        html += '<td style="vertical-align: top; text-align:center; width: 20%;">';
+                                        html += `<p>${model.name}</p>`;
+                                        html += `<audio controls style="width: 100%">
+                                                   <source src="${dir}/${model.folder}/${sample.id}.wav" type="audio/wav">
+                                                 </audio>`;
+                                        html += '</td>';
+                                    });
+                                    const remainder = 5 - group.length;
+                                    if (remainder > 0) {
+                                        html += `<td colspan="${remainder}" style="width: ${remainder * 20}%"></td>`;
+                                    }
+                                    html += '</tr>';
+                                });
+
+                                html += '</tbody></table>';
+                                return html;
+                            }
+
+                            // Ablation 1 샘플 및 그룹
+                            const styleAblationSamples = [
+                              {
+                                id: "0011_001422",
+                                script: "And what are doves. And what are doves."
+                              }
+                            ];
+                            const styleAblationGroups = [
+                              // 2개
+                              [
+                                { name: "Reference", folder: "GT" },
+                                { name: "Reference(vocoder)", folder: "Voc" }
+                              ],
+                              // 1개
+                              [
+                                { name: "Spotlight-TTS (Proposed)", folder: "SpotlightTTS" }
+                              ],
+                              // 3개
+                              [
+                                { name: "-RT", folder: "RT" },
+                                { name: "-RT-UF", folder: "RT_UF" },
+                                { name: "-RT-UF-VE", folder: "RT_UF_VE" }
+                              ]
+                            ];
+
+                            // 실제 경로
+                            const styleAblationDir = "./wavs/Ablation/Style";
+                            styleAblationSamples.forEach(sample => {
+                              const divElem = document.getElementById("ablation_style_div");
+                              // 테이블 생성
+                              const tableHtml = createAblationTable(styleAblationDir, sample, styleAblationGroups);
+                              divElem.insertAdjacentHTML("beforeend", tableHtml);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+      
+            <!-- Second Ablation Study -->
+            <div class="row mt-5">
+                <div class="col-12 mx-auto">
+                    <h4 class="text-center mb-4">Biased Self-attention</h4>
+                    <div style="text-align: right; font-size: 14px;">
+                      <p></p>
+                      <p style="margin: 0px 0;">*BM: binary mask</p>
+                    </div>
+                    <div id="ablation_attention_div">
+                        <script>
+                            function createAttentionAblationTable(dir, sample) {
+                                let html = '<table class="table table-responsive mb-4"'
+                                       + ' style="width: 100%; margin: 0 auto; background-color: white; border-radius: 20px;">';
+                                html += '<thead><tr><th colspan="5">';
+                                html += `<div class="text-left">Script : <i>${sample.script}</i></div>`;
+                                html += '</th></tr></thead><tbody>';
+
+                                // 첫 번째 행: GT, Vocoded
+                                const row1 = [
+                                    { name: "Reference", folder: "GT" },
+                                    { name: "Reference(vocoder)", folder: "Voc" }
+                                ];
+                                html += '<tr>';
+                                row1.forEach(model => {
+                                    html += '<td style="vertical-align: top; text-align:center; width: 20%;">';
+                                    html += `<p>${model.name}</p>`;
+                                    html += `<audio controls style="width: 100%">
+                                               <source src="${dir}/${model.folder}/${sample.id}.wav" type="audio/wav">
+                                             </audio>`;
+                                    html += '</td>';
+                                });
+                                html += '<td colspan="3"></td></tr>';
+
+                                // 두 번째 행: Spotlight-TTS (Ours), Self-attention w/ BM, Self-attention
+                                const row2 = [
+                                    { name: "Spotlight-TTS (Proposed)", folder: "SpotlightTTS" },
+                                    { name: "Self-attention w/ BM", folder: "SelfAttention_BM" },
+                                    { name: "Self-attention", folder: "SelfAttention" }
+                                ];
+                                html += '<tr>';
+                                row2.forEach(model => {
+                                    html += '<td style="vertical-align: top; text-align:center; width: 20%;">';
+                                    html += `<p>${model.name}</p>`;
+                                    html += `<audio controls style="width: 100%">
+                                               <source src="${dir}/${model.folder}/${sample.id}.wav" type="audio/wav">
+                                             </audio>`;
+                                    html += '</td>';
+                                });
+                                html += '<td colspan="2"></td></tr>';
+
+                                html += '</tbody></table>';
+                                return html;
+                            }
+
+                            // 샘플 데이터 정의
+                            const attentionAblationSamples = [
+                                {
+                                    id: "0011_000729",
+                                    script: "Ret came and replied on the leaves."
+                                }
+                            ];
+
+                            // 테이블 생성 및 삽입
+                            const attentionAblationDir = "./wavs/Ablation/Attention";
+                            attentionAblationSamples.forEach(sample => {
+                                const divElem = document.getElementById("ablation_attention_div");
+                                const tableHtml = createAttentionAblationTable(attentionAblationDir, sample);
+                                divElem.insertAdjacentHTML("beforeend", tableHtml);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Third Ablation Study: Style Direction Adjustment -->
+            <div class="row mt-5">
+                <div class="col-12 mx-auto">
+                    <h4 class="text-center mb-4">Style Direction Adjustment</h4>
+                    <div style="text-align: right; font-size: 14px;">
+                        <p></p>
+                        <p style="margin: 0px 0;">*SP: style preserving loss</p>
+                        <p style="margin: 0px 0;">*SD: style disentanglement loss</p>
+                    </div>
+                    <div id="ablation_style_direction_div">
+                        <script>
+                            // Style Direction Adjustment 샘플 및 그룹 수정
+                            const styleDirectionSamples = [
+                                {
+                                    id: "0016_000730",
+                                    script: "Must a name mean something?"
+                                }
+                            ];
+                            
+                            // 모델 그룹 변경 - Biased Self-attention과 동일한 레이아웃
+                            const styleDirectionGroups = [
+                                // 첫 번째 행: Reference, Reference(vocoder)
+                                [
+                                    { name: "Reference", folder: "GT" },
+                                    { name: "Reference(vocoder)", folder: "Voc" }
+                                ],
+                                // 두 번째 행: Spotlight-TTS (Proposed), -SP, -SP-SD
+                                [
+                                    { name: "Spotlight-TTS (Proposed)", folder: "SpotlightTTS" },
+                                    { name: "-SP", folder: "SP" },
+                                    { name: "-SP-SD", folder: "SP_SD" }
+                                ]
+                            ];
+
+                            // Style Direction Adjustment 섹션의 createAblationTable 함수 수정
+                            function createAblationTable(dir, sample, groups) {
+                                let html = '<table class="table table-responsive mb-4"'
+                                         + ' style="width: 100%; margin: 0 auto; background-color: white; border-radius: 20px;">';
+                                
+                                // 헤더에 Script 추가
+                                html += '<thead><tr><th colspan="5">';
+                                html += `<div class="text-left">Script : <i>${sample.script}</i></div>`;
+                                html += '</th></tr></thead><tbody>';
+                                
+                                groups.forEach((group, index) => {
+                                    html += '<tr>';
+                                    
+                                    // 일반 행 처리 (기존 코드)
+                                    group.forEach(model => {
+                                        html += '<td style="vertical-align: top; text-align:center; width: 20%;">';
+                                        html += `<p>${model.name}</p>`;
+                                        html += `<audio controls style="width: 100%">
+                                                   <source src="${dir}/${model.folder}/${sample.id}.wav" type="audio/wav">
+                                                 </audio>`;
+                                        html += '</td>';
+                                    });
+                                    
+                                    const remainder = 5 - group.length;
+                                    if (remainder > 0) {
+                                        html += `<td colspan="${remainder}" style="width: ${remainder * 20}%"></td>`;
+                                    }
+                                    
+                                    html += '</tr>';
+                                });
+                                
+                                html += '</tbody></table>';
+                                return html;
+                            }
+
+                            // 동일한 경로 사용
+                            const styleDirectionDir = "./wavs/Ablation/Style";
+                            styleDirectionSamples.forEach(sample => {
+                                const divElem = document.getElementById("ablation_style_direction_div");
+                                const tableHtml = createAblationTable(styleDirectionDir, sample, styleDirectionGroups);
+                                divElem.insertAdjacentHTML("beforeend", tableHtml);
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="scroll-to-top d-lg-none position-fixed"><a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"><i class="fa fa-chevron-up"></i></a></div>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <!-- Third party plugin JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+
+    <script src="js/scripts.js"></script>
+    <!-- Bootstrap slider JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous"></script>
