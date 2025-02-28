@@ -189,8 +189,8 @@
         function createTableForMainComparison(audioName, dir, script) {
           // 모델 폴더 매핑 (원본 코드의 exp와 동일)
           const parallelExp = {
-            "Reference": "gt",
-            "Reference(vocoder)": "Voc",
+            "Reference": "GT",
+            "Reference (vocoder)": "Voc",
             "FastSpeech 2 w/ GST": "GST",
             "StyleSpeech": "StyleSpeech",
             "FastSpeech 2 w/ CSE": "CSE",
@@ -206,7 +206,7 @@
       
           // 1) 첫 번째 행: GT, Vocoded (2개 사용, 나머지 3칸 비움)
           html += "<tr>";
-          ["Reference", "Reference(vocoder)"].forEach(modelName => {
+          ["Reference", "Reference (vocoder)"].forEach(modelName => {
             html += '<td style="vertical-align: top; text-align:center;">';
             html += "<p>" + modelName + "</p>";
             html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
@@ -327,7 +327,7 @@
     
                         const npModels = {
                             "Reference": "GT",
-                            "Refernece(vocoder)": "Voc",
+                            "Refernece (vocoder)": "Voc",
                             "FastSpeech2 w/ GST": "GST",
                             "StyleSpeech": "StyleSpeech",
                             "FastSpeech2 w/ CSE": "CSE",
@@ -343,7 +343,7 @@
     
                             // Create first row with Reference Audio and Vocoded
                             html += "<tr>";
-                            ["Reference", "Refernece(vocoder)"].forEach(model => {
+                            ["Reference", "Refernece (vocoder)"].forEach(model => {
                                 html += '<td style="vertical-align: top; text-align:center;">';
                                 html += "<p>" + model + "</p>";
                                 html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
@@ -449,7 +449,7 @@
                               // 2개
                               [
                                 { name: "Reference", folder: "GT" },
-                                { name: "Reference(vocoder)", folder: "Voc" }
+                                { name: "Reference (vocoder)", folder: "Voc" }
                               ],
                               // 1개
                               [
@@ -496,7 +496,7 @@
                                 // 첫 번째 행: GT, Vocoded
                                 const row1 = [
                                     { name: "Reference", folder: "GT" },
-                                    { name: "Reference(vocoder)", folder: "Voc" }
+                                    { name: "Reference (vocoder)", folder: "Voc" }
                                 ];
                                 html += '<tr>';
                                 row1.forEach(model => {
@@ -571,10 +571,10 @@
                             
                             // 모델 그룹 변경 - Biased Self-attention과 동일한 레이아웃
                             const styleDirectionGroups = [
-                                // 첫 번째 행: Reference, Reference(vocoder)
+                                // 첫 번째 행: Reference, Reference (vocoder)
                                 [
                                     { name: "Reference", folder: "GT" },
-                                    { name: "Reference(vocoder)", folder: "Voc" }
+                                    { name: "Reference (vocoder)", folder: "Voc" }
                                 ],
                                 // 두 번째 행: Spotlight-TTS (Proposed), -SP, -SP-SD
                                 [
