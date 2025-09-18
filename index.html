@@ -129,57 +129,31 @@
     </div>
   </section>
 
-  <script>
-    function createTableForMainComparison(audioName, dir, script) {
-      const parallelExp = {
-        "Reference": "gt",
-        "Reference(vocoder)": "Voc",
-        "FastSpeech 2 w/ GST": "GST",
-        "StyleSpeech": "StyleSpeech",
-        "FastSpeech 2 w/ CSE": "CSE",
-        "GenerSpeech": "GenerSpeech",
-        "Spotlight-TTS (Proposed)": "SpotlightTTS"
-      };
+<script>
+function createTableForMainComparison(audioName, dir, script) {
+  const parallelExp = {
+    "Reference": "gt",
+    "OTAFlow": "SpotlightTTS"
+  };
 
-      let html = '<table class="table table-responsive mb3" style="background:white;border-radius:20px;width:100%;margin:0 auto;">';
-      html += '<thead><tr><th colspan="5" style="width:40%">';
-      html += '<div class="text-left">Text:<i>' + script.script + '</i></div>';
-      html += "</th></tr></thead><tbody>";
+  let html = '<table class="table table-responsive mb3" style="background:white;border-radius:20px;width:100%;margin:0 auto;table-layout:fixed;">'; // 添加 table-layout:fixed
+  html += '<thead><tr><th colspan="2" style="width:100%">'; // 改为 colspan="2"
+  html += '<div class="text-left">Text:<i>' + script.script + '</i></div>';
+  html += "</th></tr></thead><tbody>";
 
-      /* Line1 */
-      html += "<tr>";
-      ["Reference", "Reference(vocoder)"].forEach(modelName => {
-        html += '<td style="vertical-align:top;text-align:center;">';
-        html += "<p>" + modelName + "</p>";
-        html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
-        html += '</td>';
-      });
-      html += '<td colspan="3"></td></tr>';
+  html += "<tr>";
+  ["Reference", "OTAFlow"].forEach(modelName => {
+    html += '<td style="vertical-align:top;text-align:center;width:50%;min-width:250px;padding:20px;">'; // 添加宽度控制
+    html += "<p style='margin-bottom:15px;font-size:18px;'>" + modelName + "</p>";
+    html += `<audio controls style="width:100%;max-width:280px;margin:0 auto;display:block;"><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
+    html += '</td>';
+  });
+  html += '</tr>'; // 移除注释的 colspan="3"
 
-      /* Line2 */
-      html += "<tr>";
-      ["FastSpeech 2 w/ GST", "StyleSpeech"].forEach(modelName => {
-        html += '<td style="vertical-align:top;text-align:center;">';
-        html += "<p>" + modelName + "</p>";
-        html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
-        html += '</td>';
-      });
-      html += '<td colspan="3"></td></tr>';
-
-      /* Line3 */
-      html += "<tr>";
-      ["FastSpeech 2 w/ CSE", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(modelName => {
-        html += '<td style="vertical-align:top;text-align:center;">';
-        html += "<p>" + modelName + "</p>";
-        html += `<audio controls><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
-        html += '</td>';
-      });
-      html += '<td colspan="2"></td></tr>';
-
-      html += "</tbody></table>";
-      return html;
-    }
-  </script>
+  html += "</tbody></table>";
+  return html;
+}
+</script>
 
   <!-- Comparisons -->
   <section class="page-section bg-info text-white mb0" id="comparisons">
@@ -248,12 +222,10 @@
 
             const npModels = {
               "Reference": "GT",
-              "Refernece(vocoder)": "Voc",
-              "FastSpeech2 w/ GST": "GST",
-              "StyleSpeech": "StyleSpeech",
-              "FastSpeech2 w/ CSE": "CSE",
-              "GenerSpeech": "GenerSpeech",
-              "Spotlight-TTS (Proposed)": "SpotlightTTS"
+              "A": "StyleSpeech",
+              "B": "CSE",
+              "C": "GenerSpeech",
+              "FULL": "SpotlightTTS"
             };
 
             function createNonParallelTable(dir, sample) {
@@ -262,9 +234,8 @@
               html += '<div class="text-left">Text:<i>' + sample.Script + '</i></div>';
               html += "</th></tr></thead><tbody>";
 
-              /* Reference、Reference(vocoder) */
               html += "<tr>";
-              ["Reference", "Refernece(vocoder)"].forEach(model => {
+              ["Reference","OTAFlow"].forEach(model => {
                 html += '<td style="vertical-align:top;text-align:center;">';
                 html += "<p>" + model + "</p>";
                 html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
@@ -272,19 +243,9 @@
               });
               html += '<td colspan="3"></td></tr>';
 
-              /* FastSpeech2 w/ GST、StyleSpeech */
-              html += "<tr>";
-              ["FastSpeech2 w/ GST", "StyleSpeech"].forEach(model => {
-                html += '<td style="vertical-align:top;text-align:center;">';
-                html += "<p>" + model + "</p>";
-                html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
-                html += '</td>';
-              });
-              html += '<td colspan="3"></td></tr>';
 
-              /* FastSpeech2 w/ CSE、GenerSpeech、Spotlight-TTS */
               html += "<tr>";
-              ["FastSpeech2 w/ CSE", "GenerSpeech", "Spotlight-TTS (Proposed)"].forEach(model => {
+              ["A", "B", "C"].forEach(model => {
                 html += '<td style="vertical-align:top;text-align:center;">';
                 html += "<p>" + model + "</p>";
                 html += '<audio controls><source src="' + dir + '/' + npModels[model] + '/' + sample.id + '.wav" type="audio/wav"></audio>';
