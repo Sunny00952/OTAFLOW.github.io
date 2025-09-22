@@ -131,8 +131,9 @@
 <script>
 function createTableForMainComparison(audioName, dir, script) {
   const parallelExp = {
-    "Reference": "gt",
-    "OTAFlow": "SpotlightTTS"
+    "Reference": "GT",
+    "SpotlightTTS": "SpotlightTTS",
+    "OTAFlow": "OTAFlow"
   };
 
   let html = '<table class="table table-responsive mb3" style="background:white;border-radius:20px;width:100%;margin:0 auto;table-layout:fixed;">'; // 添加 table-layout:fixed
@@ -141,7 +142,7 @@ function createTableForMainComparison(audioName, dir, script) {
   html += "</th></tr></thead><tbody>";
 
   html += "<tr>";
-  ["Reference", "OTAFlow"].forEach(modelName => {
+  ["Reference","SpotlightTTS", "OTAFlow"].forEach(modelName => {
     html += '<td style="vertical-align:top;text-align:center;width:50%;min-width:250px;padding:20px;">'; // 添加宽度控制
     html += "<p style='margin-bottom:15px;font-size:18px;'>" + modelName + "</p>";
     html += `<audio controls style="width:100%;max-width:280px;margin:0 auto;display:block;"><source src="${dir}/${parallelExp[modelName]}/${audioName}.wav" type="audio/wav"></audio>`;
